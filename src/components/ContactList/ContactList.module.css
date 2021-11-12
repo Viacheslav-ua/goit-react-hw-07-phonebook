@@ -1,0 +1,18 @@
+.row:hover {
+  background-color: darkgray;
+}
+
+.row {
+  display: flex;
+  padding: 10px 0;
+}
+
+.text {
+  width: 350px;
+  margin: 0;
+}
+
+.btn {
+  margin-left: 40px;
+  height: 20px;
+}

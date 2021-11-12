@@ -1,0 +1,26 @@
+.contactsForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 400px;
+  height: 200px;
+  border: solid 1px black;
+  padding: 15px;
+}
+
+.input {
+  /* width: 300px;
+  height: 25px; */
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.caption {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.btn {
+  width: 120px;
+  margin-top: 40px;
+}
