@@ -4,6 +4,7 @@ import ContactList from "./components/ContactList";
 import Filter from "./components/Filter";
 import S from "./App.module.css";
 
+
 const App: React.FC = () => {
   return (
     <div className={S.container}>

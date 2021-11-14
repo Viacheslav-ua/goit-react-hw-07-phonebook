@@ -1,24 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import contactsReducer from "./contacts/contacts-reducer";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import logger from "redux-logger";
+import { phoneBookApi } from "./phoneBookApi"
 
-const contactsPersistConfig = {
-  key: "contacts",
-  storage,
-  blacklist: ["filter"],
-};
 
 const store = configureStore({
   reducer: {
-    contacts: persistReducer(contactsPersistConfig, contactsReducer),
+    [phoneBookApi.reducerPath]: phoneBookApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(phoneBookApi.middleware),
   devTools: process.env.NODE_ENV === "development",
 });
 
-const persistor = persistStore(store);
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default { store, persistor };
+export default { store };

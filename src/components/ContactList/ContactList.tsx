@@ -1,11 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
-import * as actions from "../../redux/contacts/contacts-actions";
+import { useGetContactsQuery, useDeleteContactsMutation } from "../../redux/phoneBookApi"
 import S from "./ContactList.module.css";
 type listType = {
   id: string;
   name: string;
-  number: string;
+  phone: string;
 };
 
 // interface PropsType {
@@ -13,36 +12,36 @@ type listType = {
 //   onDeleteContact: string;
 // }
 
-const ContactList: React.FC<any> = ({ contacts, onDeleteContact }) => {
+const ContactList: React.FC = () => {
+
+  const { data = [], isLoading } = useGetContactsQuery('');
+  const [deleteContact] = useDeleteContactsMutation();
+
+  const onDeleteContact = async(id: string | number) => {
+    await deleteContact(id).unwrap();
+  }
+
+  if (isLoading) {
+    return <h1>LOADING...</h1>
+  }
+
   return (
     <ul className={S.list}>
-      {contacts.items.map(
-        ({ id, name, number }: listType) =>
-          name.toLowerCase().includes(contacts.filter.toLowerCase()) && (
-            <li key={id} className={S.row}>
-              <p className={S.text}>
-                {name}: {number}
-              </p>
-              <button className={S.btn} onClick={() => onDeleteContact(id)}>
-                Удалить
-              </button>
-            </li>
-          )
+      {data.map(
+        ({ id, name, phone }: listType) =>
+        
+        (<li key={id} className={S.row}>
+          <p className={S.text}>
+            {name}: {phone}
+          </p>
+          <button className={S.btn} onClick={() => onDeleteContact(id)}>
+            Удалить
+          </button>
+        </li>
+        )
       )}
     </ul>
   );
 };
 
-const mapStateToProps = (state: any) => {
-  return {
-    contacts: state.contacts,
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    onDeleteContact: (id: string) => dispatch(actions.removeContact(id)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+export default ContactList;
