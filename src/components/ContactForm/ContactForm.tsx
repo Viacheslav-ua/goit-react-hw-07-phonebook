@@ -1,29 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../Modal";
-import { useAddContactsMutation } from "../../redux/phoneBookApi"
+import {
+  useAddContactsMutation,
+  useGetContactsQuery,
+} from "../../redux/phoneBookApi";
 import S from "./ContactForm.module.css";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 
-
-interface PropsType {
-  
-  contacts: any;
-}
-
-// type contactsType = {
-//   name: string;
-//   phone: string;
-// };
-
 const ContactForm: React.FC = () => {
   const [name, setName] = useState<string>("");
+  const [nameSearch, setNameSearch] = useState<string>();
   const [number, setNumber] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [addContact, {isError}] = useAddContactsMutation();
+  const { data = [] } = useGetContactsQuery(nameSearch);
+  const [addContact] = useAddContactsMutation();
+
+  useEffect(() => {
+    if (name !== "") {
+      if (data.length === 0) {
+        addItem();
+        reset();
+      } else {
+        toggleModal();
+      }
+    }
+  }, [data]);
 
   const handleAddInput =
     (i: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +39,14 @@ const ContactForm: React.FC = () => {
       }
     };
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement | any>) => {
     e.preventDefault();
+    setNameSearch(e.currentTarget.elements.name.value);
+  };
+
+  const addItem = async () => {
     await addContact({ name: name, phone: number }).unwrap();
-    reset();
+    return;
   };
 
   const reset = () => {
@@ -55,7 +64,7 @@ const ContactForm: React.FC = () => {
         <Modal onClose={toggleModal}>
           <Alert severity="warning" onClose={toggleModal}>
             <AlertTitle>Warning</AlertTitle>
-            {name} is already in contacts
+            {nameSearch} is already in contacts
           </Alert>
         </Modal>
       )}

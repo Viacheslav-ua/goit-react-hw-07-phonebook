@@ -1,14 +1,20 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useDebounce from "../../hooks/use-debounce";
 import TextField from "@mui/material/TextField";
 import S from "./Filter.module.css";
 
-const Filter: React.FC = () => {
-const [filterValue, setFilterValue] = useState('');
+const Filter: React.FC<any> = ({ applyFilter }) => {
+  const [filterValue, setFilterValue] = useState("");
+  const debouncedFilter = useDebounce(filterValue, 500);
 
-const handleChangeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setFilterValue(e.target.value);
-}
+  useEffect(() => {
+    applyFilter(debouncedFilter);
+  }, [debouncedFilter]);
+
+  const handleChangeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterValue(e.target.value);
+  };
 
   return (
     <div>
